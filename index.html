@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denomination Codes — VCMIS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e40af;--cyan:#0ea5e9;
+  --bg:#f0f5ff;--white:#ffffff;--border:#d1daf0;--border2:#bfcbec;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--dim:#94a3b8;
+  --green:#059669;--green-lt:#ecfdf5;--green-dk:#065f46;
+  --red:#dc2626;--red-lt:#fef2f2;--red-dk:#991b1b;
+  --amber:#d97706;--amber-lt:#fffbeb;
+  --r:8px;--r-lg:12px;--r-xl:18px;
+  --sh:0 1px 4px rgba(10,31,68,.08),0 2px 12px rgba(10,31,68,.06);
+  --sh-lg:0 4px 24px rgba(10,31,68,.12);
+  --sh-xl:0 8px 40px rgba(10,31,68,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── Topbar ── */
+.topbar{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04);position:sticky;top:0;z-index:100}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{width:32px;height:32px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:16px}
+.tb-name{font-size:14px;font-weight:600;color:#0f172a;letter-spacing:-.01em}
+.tb-name span{color:#64748b;font-weight:400}
+.tb-user{display:flex;align-items:center;gap:8px;color:#475569;font-size:13px}
+.tb-avatar{width:30px;height:30px;border-radius:50%;background:#e2e8f0;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#334155}
+
+/* ── Hero ── */
+.hero{background:#fff;padding:20px 0 0;border-bottom:1px solid #e2e8f0}
+.hero-inner{max-width:1000px;margin:0 auto;padding:0 24px 20px}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:10px;color:var(--muted)}
+.hero h1{font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-.02em;margin-bottom:4px}
+.hero p{font-size:13px;color:var(--muted)}
+
+/* ── Layout ── */
+.wrap{max-width:1000px;margin:0 auto;padding:24px}
+
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:24px}
+.scard{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh);border-left:4px solid var(--blue)}
+.scard.green{border-left-color:var(--green)}
+.scard.amber{border-left-color:var(--amber)}
+.scard-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:5px}
+.scard-val{font-size:26px;font-weight:700;color:var(--navy)}
+
+/* ── Main Card & Toolbar ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--sh-xl);overflow:hidden}
+.card-body{padding:24px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:15px;flex-wrap:wrap}
+.search-wrap{display:flex;align-items:center;border:1.5px solid var(--border2);border-radius:var(--r);background:#fff;padding-left:10px}
+.search-wrap input{border:none;outline:none;padding:10px;font-size:13px;width:200px}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f8fafc;padding:12px 15px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)}
+td{padding:14px 15px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:hover td{background:#f8faff}
+
+/* ── Action Buttons (3 Icons) ── */
+.act-btns{display:flex;gap:6px}
+.act-btn{width:32px;height:32px;border-radius:var(--r);border:1.5px solid var(--border2);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s}
+.act-btn:hover{transform:translateY(-2px);box-shadow:0 3px 8px rgba(0,0,0,0.05)}
+
+.act-btn.edit:hover{border-color:var(--blue);color:var(--blue);background:#eff6ff}
+.act-btn.tog-on:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-lt)}
+.act-btn.tog-off:hover{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+.act-btn.del:hover{border-color:var(--red);color:var(--red);background:var(--red-lt)}
+
+/* ── UI Elements ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge.active{background:var(--green-lt);color:var(--green-dk)}
+.badge.inactive{background:#f1f5f9;color:#475569}
+.btn{padding:10px 18px;border-radius:var(--r);font-weight:600;cursor:pointer;border:1.5px solid var(--border2);display:inline-flex;align-items:center;gap:8px;font-size:13px}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(26,86,219,0.2)}
+
+/* ── Modals & Toasts ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,31,68,.4);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:var(--r-xl);width:100%;max-width:440px;overflow:hidden;box-shadow:var(--sh-xl);animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.modal-hd{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:24px}
+.modal-ft{padding:16px 24px;background:#f8faff;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{padding:12px 20px;background:var(--navy);color:#fff;border-radius:var(--r-lg);font-size:13px;font-weight:600;box-shadow:var(--sh-lg);animation:slide .3s ease-out}
+@keyframes slide{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">⛪</div>
+    <div class="tb-name">VCMIS <span>Member Portal</span></div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="tb-user"><div class="tb-avatar">AD</div><span>Admin</span></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">Home / Denominations</div>
+    <h1>Denomination Codes</h1>
+    <p>Manage church identifiers and status codes for the system.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="scard">
+      <div class="scard-lbl">Total Records</div>
+      <div class="scard-val" id="stTotal">0</div>
+    </div>
+    <div class="scard green">
+      <div class="scard-lbl">Active</div>
+      <div class="scard-val" id="stActive">0</div>
+    </div>
+    <div class="scard amber">
+      <div class="scard-lbl">Inactive</div>
+      <div class="scard-val" id="stInactive">0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="srchBox" placeholder="Search records..." oninput="app.render()">
+        </div>
+        <button class="btn primary" onclick="app.openModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add New
+        </button>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:70px">ID</th>
+              <th>Denomination Name</th>
+              <th style="width:100px">Status</th>
+              <th>Created Date</th>
+              <th>Created Time</th>
+              <th style="width:130px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="formOverlay">
+  <div class="modal">
+    <div class="modal-hd"><h3 id="mTitle">Add Denomination</h3><button onclick="app.closeModal()" style="border:none;background:none;cursor:pointer;font-size:20px">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <label style="display:block;font-size:11px;font-weight:700;margin-bottom:8px;text-transform:uppercase">Name</label>
+      <input type="text" id="mName" style="width:100%;padding:12px;border:1.5px solid var(--border2);border-radius:var(--r);outline:none">
+    </div>
+    <div class="modal-ft">
+      <button class="btn" onclick="app.closeModal()">Cancel</button>
+      <button class="btn primary" onclick="app.save()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const app = {
+  data: [
+    { id: 601, name: 'Baptist Church', active: 1, created: '14 Mar 2026', time: '09:00 AM' },
+    { id: 602, name: 'Assemblies of God', active: 1, created: '14 Mar 2026', time: '10:30 AM' },
+    { id: 603, name: 'Church of Pentecost', active: 1, created: '15 Mar 2026', time: '02:15 PM' },
+    { id: 604, name: 'Presbyterian Church', active: 0, created: '15 Mar 2026', time: '04:45 PM' }
+  ],
+
+  render() {
+    const query = document.getElementById('srchBox').value.toLowerCase();
+    const tbody = document.getElementById('tBody');
+    const filtered = this.data.filter(i => i.name.toLowerCase().includes(query) || i.id.toString().includes(query));
+
+    tbody.innerHTML = filtered.map(i => `
+      <tr>
+        <td><span style="font-family:'JetBrains Mono';font-weight:600;color:var(--muted)">#${i.id}</span></td>
+        <td><div style="font-weight:600;color:var(--navy)">${i.name}</div></td>
+        <td><span class="badge ${i.active ? 'active' : 'inactive'}">${i.active ? 'Active' : 'Inactive'}</span></td>
+        <td>${i.created}</td>
+        <td>${i.time}</td>
+        <td>
+          <div class="act-btns">
+            <button class="act-btn edit" onclick="app.openModal(${i.id})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="act-btn ${i.active ? 'tog-on' : 'tog-off'}" onclick="app.toggle(${i.id})">
+              ${i.active 
+                ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="16" cy="12" r="3" fill="currentColor"/></svg>`
+                : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="8" cy="12" r="3" fill="currentColor"/></svg>`
+              }
+            </button>
+            <button class="act-btn del" onclick="app.delete(${i.id})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+    this.updateStats();
+  },
+
+  updateStats() {
+    document.getElementById('stTotal').innerText = this.data.length;
+    document.getElementById('stActive').innerText = this.data.filter(x => x.active).length;
+    document.getElementById('stInactive').innerText = this.data.filter(x => !x.active).length;
+  },
+
+  openModal(id = null) {
+    document.getElementById('formOverlay').classList.add('show');
+    if(id) {
+      const item = this.data.find(x => x.id === id);
+      document.getElementById('editId').value = id;
+      document.getElementById('mName').value = item.name;
+      document.getElementById('mTitle').innerText = "Edit Denomination";
+    } else {
+      document.getElementById('editId').value = "";
+      document.getElementById('mName').value = "";
+      document.getElementById('mTitle').innerText = "Add Denomination";
+    }
+  },
+
+  closeModal() { document.getElementById('formOverlay').classList.remove('show') },
+
+  toggle(id) {
+    const item = this.data.find(x => x.id === id);
+    item.active = item.active ? 0 : 1;
+    this.notify(`"${item.name}" updated`);
+    this.render();
+  },
+
+  save() {
+    const name = document.getElementById('mName').value;
+    const id = document.getElementById('editId').value;
+    const now = new Date();
+    if(id) {
+      const item = this.data.find(x => x.id == id);
+      item.name = name;
+    } else {
+      this.data.unshift({
+        id: Math.max(...this.data.map(x => x.id)) + 1,
+        name, active: 1, 
+        created: now.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}),
+        time: now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', hour12:true})
+      });
+    }
+    this.closeModal();
+    this.render();
+  },
+
+  delete(id) {
+    if(confirm("Delete this record?")) {
+      this.data = this.data.filter(x => x.id !== id);
+      this.render();
+    }
+  },
+
+  notify(msg) {
+    const wrap = document.getElementById('toastWrap');
+    const t = document.createElement('div');
+    t.className = 'toast'; t.innerText = msg;
+    wrap.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300) }, 2000);
+  }
+};
+app.render();
+</script>
+</body>
+</html>
